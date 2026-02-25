@@ -245,7 +245,7 @@ const App = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] text-black selection:bg-blue-100 relative overflow-x-hidden font-serif">
+    <div className="min-h-screen bg-[#fafaf9] text-black selection:bg-blue-100 relative overflow-x-clip font-serif">
       <svg className="hidden">
         <filter id="hand-drawn-filter">
           <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
