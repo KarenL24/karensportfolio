@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { 
   Github, 
   Linkedin, 
@@ -24,6 +27,24 @@ import {
   Command,
   Heart
 } from 'lucide-react';
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
+
+let app, auth, db;
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+} catch (err) {
+  console.warn('Firebase init skipped:', err.message);
+}
 
 const ProjectCard = ({ project }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -146,7 +167,39 @@ const App = () => {
   
   const [skillFilter, setSkillFilter] = useState('All');
   const [activeSection, setActiveSection] = useState('home');
+  const [user, setUser] = useState(null);
   const scrollingRef = useRef(false);
+
+  useEffect(() => {
+    if (!auth) return;
+    const initAuth = async () => {
+      try {
+        await signInAnonymously(auth);
+      } catch (err) {
+        console.warn('Auth failed:', err.message);
+      }
+    };
+    initAuth();
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!user || !db) return;
+    const logVisit = async () => {
+      try {
+        await addDoc(collection(db, 'visits'), {
+          timestamp: serverTimestamp(),
+          userAgent: navigator.userAgent,
+          platform: navigator.platform,
+          screenResolution: `${window.screen.width}x${window.screen.height}`
+        });
+      } catch (err) {
+        // Silent failure
+      }
+    };
+    logVisit();
+  }, [user]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -366,7 +419,7 @@ const App = () => {
       <main className="max-w-6xl mx-auto relative px-4 pt-20">
         
         {/* Landing Section */}
-        <section id="home" className="flex items-center justify-center relative mb-20 pt-4 pb-8">
+        <section id="home" className="flex items-center justify-center relative mb-20 -mt-8 pb-8">
           <div className="relative w-full max-w-5xl mx-auto">
             <img 
               src="/landing.png" 
@@ -463,18 +516,20 @@ const App = () => {
           </div>
         </section>
 
-        <footer id="contact" className="relative py-24 border-t border-black/10 text-center opacity-60 scroll-mt-20">
-          <div className="flex justify-center gap-12 mb-10">
-            <Github size={20} className="hover:text-blue-700 cursor-pointer transition-colors" />
-            <Linkedin size={20} className="hover:text-blue-700 cursor-pointer transition-colors" />
-            <Mail size={20} className="hover:text-blue-700 cursor-pointer transition-colors" />
+        <footer id="contact" className="py-16 border-t border-black/10 opacity-60 scroll-mt-20">
+          <div className="flex items-center justify-between max-w-6xl mx-auto px-8">
+            <div className="flex flex-col gap-6">
+              <Github size={20} className="hover:text-blue-700 cursor-pointer transition-colors" />
+              <Linkedin size={20} className="hover:text-blue-700 cursor-pointer transition-colors" />
+              <Mail size={20} className="hover:text-blue-700 cursor-pointer transition-colors" />
+            </div>
+            <img 
+              src="/contactme.png" 
+              alt="Contact me doodle" 
+              className="w-64 sm:w-80 md:w-96 select-none pointer-events-none" 
+              draggable={false}
+            />
           </div>
-          <img 
-            src="/contactme.png" 
-            alt="Contact me doodle" 
-            className="absolute -right-16 top-1/2 -translate-y-1/2 w-[40rem] select-none pointer-events-none" 
-            draggable={false}
-          />
         </footer>
       </main>
 
