@@ -211,25 +211,28 @@ const App = () => {
     }
   ];
 
+  const devicon = (name) => <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`} alt="" className="w-5 h-5" />;
+  const deviconPlain = (name) => <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-plain.svg`} alt="" className="w-5 h-5" />;
+
   const skillInventory = [
-    { name: "C++/C", type: "Languages", color: "#3366ff", icon: <Terminal size={20} /> },
-    { name: "Python", type: "Languages", color: "#ff4d00", icon: <Cpu size={20} /> },
-    { name: "Java", type: "Languages", color: "#3776AB", icon: <Code2 size={20} /> },
-    { name: "JavaScript", type: "Languages", color: "#3178C6", icon: <Zap size={20} /> },
-    { name: "SQL", type: "Languages", color: "#00d1f7", icon: <Box size={20} /> },
-    { name: "HTML/CSS", type: "Languages", color: "#38B2AC", icon: <Palette size={20} /> },
-    { name: "PyTorch", type: "Frameworks/Libraries", color: "#111111", icon: <Layers size={20} /> },
-    { name: "Scikit-learn", type: "Frameworks/Libraries", color: "#339933", icon: <Layers size={20} /> },
-    { name: "React.js", type: "Frameworks/Libraries", color: "#00ADD8", icon: <Globe size={20} /> },
-    { name: "Spring Boot", type: "Frameworks/Libraries", color: "#336791", icon: <Database size={20} /> },
-    { name: "NumPy", type: "Frameworks/Libraries", color: "#2496ED", icon: <Box size={20} /> },
-    { name: "TailwindCSS", type: "Frameworks/Libraries", color: "#326CE5", icon: <Infinity size={20} /> },
-    { name: "Docker", type: "Tools/Other", color: "#F05032", icon: <Binary size={20} /> },
-    { name: "MongoDB", type: "Tools/Other", color: "#019733", icon: <Command size={20} /> },
-    { name: "Git", type: "Tools/Other", color: "#F24E1E", icon: <Monitor size={20} /> },
-    { name: "Azure", type: "Tools/Other", color: "#0078D4", icon: <Globe size={20} /> },
-    { name: "Figma", type: "Tools/Other", color: "#F24E1E", icon: <Palette size={20} /> },
-    { name: "Linux", type: "Languages", color: "#FCC624", icon: <Terminal size={20} /> }
+    { name: "C++/C", type: "Languages", icon: devicon("cplusplus") },
+    { name: "Python", type: "Languages", icon: devicon("python") },
+    { name: "Java", type: "Languages", icon: devicon("java") },
+    { name: "JavaScript", type: "Languages", icon: devicon("javascript") },
+    { name: "SQL", type: "Languages", icon: devicon("mysql") },
+    { name: "HTML/CSS", type: "Languages", icon: devicon("html5") },
+    { name: "PyTorch", type: "Frameworks/Libraries", icon: devicon("pytorch") },
+    { name: "Scikit-learn", type: "Frameworks/Libraries", icon: deviconPlain("scikitlearn") },
+    { name: "React.js", type: "Frameworks/Libraries", icon: devicon("react") },
+    { name: "Spring Boot", type: "Frameworks/Libraries", icon: devicon("spring") },
+    { name: "NumPy", type: "Frameworks/Libraries", icon: devicon("numpy") },
+    { name: "TailwindCSS", type: "Frameworks/Libraries", icon: devicon("tailwindcss") },
+    { name: "Docker", type: "Tools/Other", icon: devicon("docker") },
+    { name: "MongoDB", type: "Tools/Other", icon: devicon("mongodb") },
+    { name: "Git", type: "Tools/Other", icon: devicon("git") },
+    { name: "Azure", type: "Tools/Other", icon: devicon("azure") },
+    { name: "Figma", type: "Tools/Other", icon: devicon("figma") },
+    { name: "Linux", type: "Tools/Other", icon: devicon("linux") }
   ];
 
   const filteredSkills = skillFilter === 'All' 
@@ -371,26 +374,6 @@ const App = () => {
               className="w-full object-contain select-none pointer-events-none"
               draggable={false}
             />
-            <div 
-              className="absolute flex flex-col pointer-events-none select-none"
-              style={{ 
-                top: '46%', 
-                left: '53.5%', 
-                width: '35%',
-                transform: 'rotate(-4.5deg)',
-                gap: 'clamp(0.6rem, 2.2vw, 1.6rem)'
-              }}
-            >
-              <span className="text-[clamp(8px,1.4vw,16px)] tracking-[0.12em] uppercase opacity-80" style={{ color: '#2b3a67' }}>
-                Computer Science @ Waterloo
-              </span>
-              <span className="text-[clamp(8px,1.4vw,16px)] tracking-[0.12em] uppercase opacity-80" style={{ color: '#2b3a67' }}>
-                Software Engineer
-              </span>
-              <span className="text-[clamp(8px,1.4vw,16px)] tracking-[0.12em] uppercase opacity-80" style={{ color: '#2b3a67' }}>
-                Toronto / Waterloo
-              </span>
-            </div>
           </div>
         </section>
 
@@ -407,7 +390,7 @@ const App = () => {
               <ul className="experiences-list leading-snug">
                 <li>
                   <img src="https://www.ontario.ca/themes/ontario_2021/assets/logo-ontario-with-text.svg" alt="ONGov" className="experience-logo" />
-                  <span>SWE @ <span className="experience-link cursor-pointer">ONGov</span></span>
+                  <span>AI Data Trainer @ <span className="experience-link cursor-pointer">Cohere</span></span>
                 </li>
                 <li>
                   <img src="https://uwaterloo.ca/computer-science/sites/ca.computer-science/files/uploads/images/cs-logo-gold-black.png" alt="Waterloo" className="experience-logo" />
@@ -445,12 +428,12 @@ const App = () => {
                       <span className="-translate-y-1 z-10 block h-full w-full transform-gpu rounded-[13px] bg-neutral-100 px-2 sm:px-3 py-2 text-neutral-500 shadow-[inset_0px_1.5px_3px_rgba(255,255,255,0.8)] transition-all duration-150 active:translate-y-0 active:shadow-transparent flex flex-col justify-between">
                         <div className="flex justify-between items-start w-full">
                            <span className="text-[8px] font-mono opacity-40 font-bold">{idx.toString(16).toUpperCase()}</span>
-                           <div style={{ color: skill.color }} className="opacity-90 transition-transform hover:scale-110">
+                           <div className="opacity-90 transition-transform hover:scale-110">
                               {skill.icon}
                            </div>
                         </div>
                         <div className="mt-auto overflow-hidden w-full">
-                          <span className="block truncate font-normal text-[clamp(6px,1.2cqw,10px)] uppercase tracking-tighter text-neutral-900">
+                          <span className="block truncate font-normal text-[clamp(9px,3cqw,15px)] uppercase tracking-tighter text-neutral-900">
                             {skill.name}
                           </span>
                         </div>
