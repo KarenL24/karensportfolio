@@ -593,7 +593,7 @@ const App = () => {
         {/* About Me Section - Tightened internal and bottom spacing */}
         <section id="about" className="mb-24 relative max-w-6xl mx-auto scroll-mt-20">
           <div className="flex justify-between items-end mb-6 border-b border-black/10 pb-4">
-            <h2 className="text-3xl italic font-medium tracking-tight">About Me_</h2>
+            <h2 className="text-3xl italic font-medium tracking-tight">About Me</h2>
             <div className="text-[10px] tracking-[0.3em] font-bold opacity-30 uppercase"></div>
           </div>
 
