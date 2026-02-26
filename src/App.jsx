@@ -40,10 +40,19 @@ const getRelativeTime = (timestamp) => {
   const diff = Date.now() - timestamp;
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return `${mins} min${mins === 1 ? "" : "s"} ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
   return `${Math.floor(hours / 24)}d ago`;
+};
+
+const RelativeTime = ({ timestamp }) => {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 10000);
+    return () => clearInterval(id);
+  }, []);
+  return timestamp ? getRelativeTime(timestamp) : "";
 };
 
 const firebaseConfig = {
@@ -224,7 +233,7 @@ const VinylRecord = ({ track }) => {
           <div className="text-[clamp(4px,0.6vw,8px)] font-serif uppercase tracking-tighter opacity-40 flex items-center gap-1">
             <span>by {track.artist}</span>
             <span className="w-0.5 h-0.5 rounded-full bg-black/20"></span>
-            <span>{track.isPlaying ? 'online' : track.timestamp ? getRelativeTime(track.timestamp) : ''}</span>
+            <span>{track.isPlaying ? 'online' : track.timestamp ? <RelativeTime timestamp={track.timestamp} /> : ''}</span>
           </div>
         )}
       </div>
@@ -272,13 +281,14 @@ const App = () => {
       if (nowPlayingRes.status === 200) {
         const data = await nowPlayingRes.json();
         if (data.item) {
+          const startedAt = data.timestamp ?? Date.now();
           setTrack({
             isPlaying: data.is_playing,
             title: data.item.name,
             artist: data.item.artists[0].name,
             songUrl: data.item.external_urls.spotify,
             albumImageUrl: data.item.album.images[0].url,
-            timestamp: Date.now()
+            timestamp: startedAt
           });
           return;
         }
