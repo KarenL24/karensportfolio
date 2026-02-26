@@ -665,7 +665,7 @@ const App = () => {
           <div className="flex items-end gap-4 mb-12 border-b border-black/10 pb-2">
             <h2 className="text-3xl italic font-medium tracking-tight">Projects</h2>
             <img 
-              src="/Untitled_Artwork 6.png" 
+              src="/Untitled_Artwork%206.png" 
               alt="Untitled Artwork 6" 
               className="max-w-[140px] sm:max-w-[180px] md:max-w-[220px] object-contain"
             />
@@ -701,7 +701,7 @@ const App = () => {
               </div>
             </div>
             <img 
-              src="/Untitled_Artwork 2.png" 
+              src="/Untitled_Artwork%202.png" 
               alt="Untitled Artwork 2" 
               className="w-[5rem] sm:w-[6rem] md:w-[7rem] lg:w-[9rem] select-none pointer-events-none shrink-0 flex-shrink-0" 
               draggable={false}
