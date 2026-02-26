@@ -188,14 +188,14 @@ const VinylRecord = ({ track }) => {
       className="flex items-center gap-2 group cursor-pointer"
     >
       <div className="relative shrink-0 w-full aspect-square">
-        <div className="absolute inset-0 rounded-full bg-neutral-900 border-4 border-neutral-800 shadow-2xl overflow-hidden flex items-center justify-center animate-[spin_6s_linear_infinite] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-0 rounded-full bg-neutral-900 border border-neutral-800 shadow-2xl overflow-hidden flex items-center justify-center animate-[spin_6s_linear_infinite] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
           
           <div className="absolute inset-0 transition-all duration-500 grayscale group-hover:grayscale-0">
             {track.albumImageUrl ? (
               <img src={track.albumImageUrl} alt="album art" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
-                 <Music size={24} className="text-white/10" />
+                 <Music className="text-white/10 w-[40%] h-[40%]" />
               </div>
             )}
           </div>
@@ -211,8 +211,8 @@ const VinylRecord = ({ track }) => {
           <div className="absolute top-0 left-1/2 w-1/2 h-full bg-white/5 -skew-x-12 translate-x-[-100%] pointer-events-none"></div>
         </div>
         
-        <div className="absolute -top-1 -right-1 bg-white p-1.5 rounded-full shadow-md border border-black/5 group-hover:scale-110 transition-transform z-20">
-           <Music size={14} className="text-[#0033cc]" />
+        <div className="absolute -top-[4%] -right-[4%] w-[35%] h-[35%] min-w-0 min-h-0 rounded-full bg-white shadow-md border border-black/5 group-hover:scale-110 transition-transform z-20 flex items-center justify-center [&>svg]:w-[65%] [&>svg]:h-[65%]">
+           <Music className="text-[#0033cc]" />
         </div>
       </div>
       
