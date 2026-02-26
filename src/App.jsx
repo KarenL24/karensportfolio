@@ -216,7 +216,7 @@ const VinylRecord = ({ track }) => {
         </div>
       </div>
       
-      <div className="text-left whitespace-nowrap shrink-0 mt-3" style={{ transform: 'rotate(-2.1deg)' }}>
+      <div className="text-left whitespace-nowrap shrink-0 mt-5" style={{ transform: 'rotate(-2.1deg)' }}>
         <div className="font-serif text-[clamp(5px,1vw,12px)] italic opacity-90 group-hover:opacity-100 transition-opacity" style={{ color: "#0033cc" }}>
           {track.isPlaying ? `listening: ${track.title}` : track.title ? `last play: ${track.title}` : 'currently quiet'}
         </div>
