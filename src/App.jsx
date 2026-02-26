@@ -289,15 +289,17 @@ const App = () => {
       });
       if (recentlyPlayedRes.status === 200) {
         const data = await recentlyPlayedRes.json();
-        const item = data.items[0];
-        setTrack({
-          isPlaying: false,
-          title: item.track.name,
-          artist: item.track.artists[0].name,
-          songUrl: item.track.external_urls.spotify,
-          albumImageUrl: item.track.album.images[0].url,
-          timestamp: new Date(item.played_at).getTime()
-        });
+        const item = data.items?.[0];
+        if (item?.track) {
+          setTrack({
+            isPlaying: false,
+            title: item.track.name,
+            artist: item.track.artists?.[0]?.name ?? "Unknown",
+            songUrl: item.track.external_urls?.spotify ?? "https://open.spotify.com",
+            albumImageUrl: item.track.album?.images?.[0]?.url ?? "",
+            timestamp: item.played_at ? new Date(item.played_at).getTime() : null
+          });
+        }
       }
     } catch (err) {
       console.warn("Spotify fetch error:", err.message);
@@ -571,7 +573,7 @@ const App = () => {
               className="w-full object-contain select-none pointer-events-none"
               draggable={false}
             />
-            <div className="absolute" style={{ left: '26%', top: '92%', transform: 'translate(-50%, -50%) rotate(-3deg)', width: '7%' }}>
+            <div className="absolute" style={{ left: '24.5%', top: '92%', transform: 'translate(-50%, -50%) rotate(-3deg)', width: '7%' }}>
               <VinylRecord track={track} />
             </div>
           </div>
