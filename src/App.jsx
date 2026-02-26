@@ -377,7 +377,7 @@ const App = () => {
       tech: ["JavaScript", "SQLite", "React"],
       date: "",
       desc: "Small business supply platform: Consolidating bulk orders to cut costs, with automated Paybilt API payments and TailwindCSS UI.",
-      image: "gallery.jpg",
+      image: "/gallery.jpg",
       isVideo: false,
       github: "https://github.com/KarenL24/CollaboraCart",
       devpost: "https://devpost.com/software/collaboracart"
@@ -388,7 +388,7 @@ const App = () => {
       tech: ["Python", "SerpAPI", "TensorFlow"],
       date: "2023",
       desc: "Won best sustainability @ Technova 23' for image-based sustainable fashion discovery tool with TensorFlow classification model & SerpAPI scraping.",
-      image: "gallery (1).jpg",
+      image: "/gallery%20(1).jpg",
       isVideo: false,
       github: "https://github.com/KarenL24/re.style",
       devpost: "https://devpost.com/software/restlylee"
@@ -399,7 +399,7 @@ const App = () => {
       tech: ["Tesseract", "OpenAI API", "Flask"],
       date: "2023",
       desc: "AI Meal Planner with Tessearct OCR receipt scanning, OpenAI API + beautifulsoup for recipe generation.",
-      image: "gallery (2).jpg",
+      image: "/gallery%20(2).jpg",
       isVideo: false,
       github: "https://github.com/austinjiann/Preppin",
       devpost: "https://devpost.com/software/preppin"
@@ -410,7 +410,7 @@ const App = () => {
       tech: ["Python", "Pandas", "OpenAI API"],
       date: "2025",
       desc: "Automating XML schema & dataset merging, via semantic bank field desciption matching using OpenAI and Pandas.",
-      image: "gallery (3).jpg",
+      image: "/gallery%20(3).jpg",
       isVideo: false,
       github: "https://github.com/Leo-Zh9/Financial_Data_Normalizer",
       devpost: "https://devpost.com/software/bridgette"
