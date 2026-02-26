@@ -188,7 +188,7 @@ const VinylRecord = ({ track }) => {
       className="flex items-center gap-2 group cursor-pointer"
     >
       <div className="relative shrink-0 w-full aspect-square">
-        <div className="absolute inset-0 rounded-full bg-neutral-900 border border-neutral-800 shadow-2xl overflow-hidden flex items-center justify-center animate-[spin_6s_linear_infinite] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-0 rounded-full bg-neutral-900 shadow-2xl overflow-hidden flex items-center justify-center animate-[spin_6s_linear_infinite] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
           
           <div className="absolute inset-0 transition-all duration-500 grayscale group-hover:grayscale-0">
             {track.albumImageUrl ? (
