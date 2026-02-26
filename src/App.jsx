@@ -25,8 +25,26 @@ import {
   Monitor, 
   Palette, 
   Command,
-  Heart
+  Heart,
+  Music
 } from 'lucide-react';
+
+const SPOTIFY_CONFIG = {
+  CLIENT_ID: import.meta.env.VITE_SPOTIFY_CLIENT_ID || "",
+  CLIENT_SECRET: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET || "",
+  REFRESH_TOKEN: import.meta.env.VITE_SPOTIFY_REFRESH_TOKEN || ""
+};
+
+const getRelativeTime = (timestamp) => {
+  if (!timestamp) return "";
+  const diff = Date.now() - timestamp;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
+};
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -161,6 +179,59 @@ const ProjectCard = ({ project }) => {
   );
 };
 
+const VinylRecord = ({ track }) => {
+  return (
+    <a 
+      href={track.songUrl} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 group cursor-pointer"
+    >
+      <div className="relative shrink-0 w-full aspect-square">
+        <div className="absolute inset-0 rounded-full bg-neutral-900 border-4 border-neutral-800 shadow-2xl overflow-hidden flex items-center justify-center animate-[spin_6s_linear_infinite] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
+          
+          <div className="absolute inset-0 transition-all duration-500 grayscale group-hover:grayscale-0">
+            {track.albumImageUrl ? (
+              <img src={track.albumImageUrl} alt="album art" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
+                 <Music size={24} className="text-white/10" />
+              </div>
+            )}
+          </div>
+
+          <div className="absolute inset-0 rounded-full border-[1px] border-white/5 opacity-20 pointer-events-none"></div>
+          <div className="absolute inset-4 rounded-full border-[1px] border-white/5 opacity-10 pointer-events-none"></div>
+          <div className="absolute inset-8 rounded-full border-[1px] border-white/5 opacity-10 pointer-events-none"></div>
+          
+          <div className="w-1.5 h-1.5 rounded-full bg-[#fafaf9] border border-black/10 z-20 shadow-inner"></div>
+
+          <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.4)_100%)] pointer-events-none"></div>
+          
+          <div className="absolute top-0 left-1/2 w-1/2 h-full bg-white/5 -skew-x-12 translate-x-[-100%] pointer-events-none"></div>
+        </div>
+        
+        <div className="absolute -top-1 -right-1 bg-white p-1.5 rounded-full shadow-md border border-black/5 group-hover:scale-110 transition-transform z-20">
+           <Music size={14} className="text-[#0033cc]" />
+        </div>
+      </div>
+      
+      <div className="text-left whitespace-nowrap shrink-0 mt-3" style={{ transform: 'rotate(-2.1deg)' }}>
+        <div className="font-serif text-[clamp(5px,1vw,12px)] italic opacity-90 group-hover:opacity-100 transition-opacity" style={{ color: "#0033cc" }}>
+          {track.isPlaying ? `listening: ${track.title}` : track.title ? `last play: ${track.title}` : 'currently quiet'}
+        </div>
+        {track.title && (
+          <div className="text-[clamp(4px,0.6vw,8px)] font-serif uppercase tracking-tighter opacity-40 flex items-center gap-1">
+            <span>by {track.artist}</span>
+            <span className="w-0.5 h-0.5 rounded-full bg-black/20"></span>
+            <span>{track.isPlaying ? 'online' : track.timestamp ? getRelativeTime(track.timestamp) : ''}</span>
+          </div>
+        )}
+      </div>
+    </a>
+  );
+};
+
 const App = () => {
   const INK_BLUE = "#0033cc"; 
   const RED_CLIP = "#cc3333";
@@ -168,7 +239,76 @@ const App = () => {
   const [skillFilter, setSkillFilter] = useState('All');
   const [activeSection, setActiveSection] = useState('home');
   const [user, setUser] = useState(null);
+  const [track, setTrack] = useState({
+    isPlaying: false,
+    title: "",
+    artist: "",
+    songUrl: "https://open.spotify.com",
+    albumImageUrl: "",
+    timestamp: null
+  });
   const scrollingRef = useRef(false);
+
+  const getSpotifyData = async () => {
+    if (!SPOTIFY_CONFIG.CLIENT_ID || !SPOTIFY_CONFIG.REFRESH_TOKEN) return;
+    try {
+      const basic = btoa(`${SPOTIFY_CONFIG.CLIENT_ID}:${SPOTIFY_CONFIG.CLIENT_SECRET}`);
+      const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${basic}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: SPOTIFY_CONFIG.REFRESH_TOKEN,
+        }),
+      });
+      const { access_token } = await tokenResponse.json();
+
+      const nowPlayingRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (nowPlayingRes.status === 200) {
+        const data = await nowPlayingRes.json();
+        if (data.item) {
+          setTrack({
+            isPlaying: data.is_playing,
+            title: data.item.name,
+            artist: data.item.artists[0].name,
+            songUrl: data.item.external_urls.spotify,
+            albumImageUrl: data.item.album.images[0].url,
+            timestamp: Date.now()
+          });
+          return;
+        }
+      }
+
+      const recentlyPlayedRes = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (recentlyPlayedRes.status === 200) {
+        const data = await recentlyPlayedRes.json();
+        const item = data.items[0];
+        setTrack({
+          isPlaying: false,
+          title: item.track.name,
+          artist: item.track.artists[0].name,
+          songUrl: item.track.external_urls.spotify,
+          albumImageUrl: item.track.album.images[0].url,
+          timestamp: new Date(item.played_at).getTime()
+        });
+      }
+    } catch (err) {
+      console.warn("Spotify fetch error:", err.message);
+    }
+  };
+
+  useEffect(() => {
+    getSpotifyData();
+    const interval = setInterval(getSpotifyData, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!auth) return;
@@ -354,6 +494,10 @@ const App = () => {
             background: #f0f0f0;
             padding: 2px;
           }
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
         `}
       </style>
 
@@ -384,7 +528,7 @@ const App = () => {
                     transform: 'translate(-50%, -50%)',
                     width: 'calc(100% + 160px)',
                     minWidth: '180px',
-                    height: 'calc(100% + 55px)',
+                    height: 'calc(100% + 85px)',
                   }}
                   draggable={false}
                 />
@@ -406,7 +550,7 @@ const App = () => {
                    transform: 'translate(-50%, -50%)',
                    width: 'calc(100% + 160px)',
                    minWidth: '180px',
-                   height: 'calc(100% + 55px)',
+                   height: 'calc(100% + 85px)',
                  }}
                  draggable={false}
                />
@@ -419,7 +563,7 @@ const App = () => {
       <main className="max-w-6xl mx-auto relative px-4 pt-20">
         
         {/* Landing Section */}
-        <section id="home" className="flex items-center justify-center relative mb-20 -mt-8 pb-8">
+        <section id="home" className="flex flex-col items-center justify-center relative mb-20 -mt-8 pb-8">
           <div className="relative w-full max-w-5xl mx-auto">
             <img 
               src="/landing.png" 
@@ -427,6 +571,9 @@ const App = () => {
               className="w-full object-contain select-none pointer-events-none"
               draggable={false}
             />
+            <div className="absolute" style={{ left: '26%', top: '92%', transform: 'translate(-50%, -50%) rotate(-3deg)', width: '7%' }}>
+              <VinylRecord track={track} />
+            </div>
           </div>
         </section>
 
@@ -434,7 +581,7 @@ const App = () => {
         <section id="about" className="mb-24 relative max-w-6xl mx-auto scroll-mt-20">
           <div className="flex justify-between items-end mb-6 border-b border-black/10 pb-4">
             <h2 className="text-3xl italic font-medium tracking-tight">About Me_</h2>
-            <div className="text-[10px] tracking-[0.3em] font-bold opacity-30 uppercase">Professional Profile</div>
+            <div className="text-[10px] tracking-[0.3em] font-bold opacity-30 uppercase"></div>
           </div>
 
           <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
@@ -442,11 +589,11 @@ const App = () => {
               <h2 className="text-[11px] font-bold uppercase tracking-[0.4em] mb-8 text-black text-left">Experiences</h2>
               <ul className="experiences-list leading-snug">
                 <li>
-                  <img src="https://www.ontario.ca/themes/ontario_2021/assets/logo-ontario-with-text.svg" alt="ONGov" className="experience-logo" />
+                  <img src="https://avatars.githubusercontent.com/u/54850923?s=280&v=4" alt="Cohere" className="experience-logo" style={{ filter: 'none', width: 36, height: 36 }} />
                   <span>AI Data Trainer @ <span className="experience-link cursor-pointer">Cohere</span></span>
                 </li>
                 <li>
-                  <img src="https://uwaterloo.ca/computer-science/sites/ca.computer-science/files/uploads/images/cs-logo-gold-black.png" alt="Waterloo" className="experience-logo" />
+                  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/University_of_Waterloo_seal.svg/1200px-University_of_Waterloo_seal.svg.png" alt="Waterloo" className="experience-logo" style={{ filter: 'none', width: 36, height: 36 }} />
                   <span>Computer Science @ <span className="experience-link cursor-pointer font-bold italic">University of Waterloo</span></span>
                 </li>
               </ul>
@@ -503,7 +650,7 @@ const App = () => {
         <section id="projects" className="mb-40 px-4 scroll-mt-20">
           <div className="flex justify-between items-end mb-12 border-b border-black/10 pb-4">
             <h2 className="text-3xl italic font-medium tracking-tight">Technical Works_</h2>
-            <div className="text-[10px] tracking-[0.3em] font-bold opacity-30 uppercase">Selected Archive</div>
+            <div className="text-[10px] tracking-[0.3em] font-bold opacity-30 uppercase"></div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 relative z-10">
