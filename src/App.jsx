@@ -125,13 +125,13 @@ const ProjectCard = ({ project }) => {
               </span>
             ))}
           </div>
-          <div className="flex items-center gap-3 relative z-10 pointer-events-auto">
+          <div className="flex items-center gap-1 sm:gap-3 relative z-10 pointer-events-auto">
             {project.github && (
               <a 
                 href={project.github} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="hover:opacity-100 opacity-40 transition-all"
+                className="hover:opacity-100 opacity-40 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center -m-2 p-2 touch-manipulation cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
                 title="GitHub"
               >
@@ -143,7 +143,7 @@ const ProjectCard = ({ project }) => {
                 href={project.devpost} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="hover:opacity-100 opacity-40 transition-all"
+                className="hover:opacity-100 opacity-40 transition-all min-w-[44px] min-h-[44px] flex items-center justify-center -m-2 p-2 touch-manipulation cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
                 title="Devpost"
               >
@@ -173,7 +173,7 @@ const ProjectCard = ({ project }) => {
         <CardContent sketchy={false} />
         
         <div 
-          className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out"
+          className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out [@media(hover:none)]:hidden"
           style={{ 
             opacity: isHovering ? 1 : 0,
             filter: 'url(#hand-drawn-filter)',
@@ -194,7 +194,8 @@ const VinylRecord = ({ track }) => {
       href={track.songUrl} 
       target="_blank" 
       rel="noopener noreferrer"
-      className="flex items-center gap-2 group cursor-pointer"
+      className="flex items-center group cursor-pointer"
+      style={{ gap: '0.25em' }}
     >
       <div className="relative shrink-0 w-full aspect-square">
         <div className="absolute inset-0 rounded-full bg-neutral-900 shadow-2xl overflow-hidden flex items-center justify-center animate-[spin_6s_linear_infinite] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
@@ -225,12 +226,12 @@ const VinylRecord = ({ track }) => {
         </div>
       </div>
       
-      <div className="text-left whitespace-nowrap shrink-0 mt-5" style={{ transform: 'rotate(-2.1deg)' }}>
-        <div className="font-serif text-[clamp(5px,1vw,12px)] italic opacity-90 group-hover:opacity-100 transition-opacity" style={{ color: "#0033cc" }}>
-          {track.isPlaying ? `listening: ${track.title}` : track.title ? `last play: ${track.title}` : 'currently quiet'}
+      <div className="text-left whitespace-nowrap shrink-0" style={{ transform: 'rotate(-2.1deg)', marginTop: '1.4em', marginLeft: '0.6em' }}>
+        <div className="font-serif italic opacity-90 group-hover:opacity-100 transition-opacity" style={{ color: "#0033cc", fontSize: '1em' }}>
+          {track.isPlaying ? `listening: ${track.title}` : track.title ? `last played: ${track.title}` : 'currently quiet'}
         </div>
         {track.title && (
-          <div className="text-[clamp(4px,0.6vw,8px)] font-serif uppercase tracking-tighter opacity-40 flex items-center gap-1">
+          <div className="font-serif uppercase tracking-tighter opacity-40 flex items-center gap-1" style={{ fontSize: '0.65em' }}>
             <span>by {track.artist}</span>
             <span className="w-0.5 h-0.5 rounded-full bg-black/20"></span>
             <span>{track.isPlaying ? 'online' : track.timestamp ? <RelativeTime timestamp={track.timestamp} /> : ''}</span>
@@ -583,7 +584,7 @@ const App = () => {
               className="w-full object-contain select-none pointer-events-none"
               draggable={false}
             />
-            <div className="absolute" style={{ left: '24.5%', top: '92%', transform: 'translate(-50%, -50%) rotate(-3deg)', width: '7%' }}>
+            <div className="absolute" style={{ left: '24.5%', top: '92%', transform: 'translate(-50%, -50%) rotate(-3deg)', width: '7%', fontSize: 'clamp(3px, 0.7vw, 12px)' }}>
               <VinylRecord track={track} />
             </div>
           </div>
