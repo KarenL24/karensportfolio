@@ -608,7 +608,7 @@ const App = () => {
                 </li>
                 <li>
                   <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/University_of_Waterloo_seal.svg/1200px-University_of_Waterloo_seal.svg.png" alt="Waterloo" className="experience-logo" style={{ filter: 'none', width: 36, height: 36 }} />
-                  <span>Computer Science @ <a href="https://uwaterloo.ca/future-students/programs/computer-science" target="_blank" rel="noopener noreferrer" className="experience-link cursor-pointer font-bold hover:opacity-80">University of Waterloo</a></span>
+                  <span>Computer Science @ <a href="https://uwaterloo.ca/future-students/programs/computer-science" target="_blank" rel="noopener noreferrer" className="experience-link cursor-pointer hover:opacity-80">University of Waterloo</a></span>
                 </li>
               </ul>
             </div>
